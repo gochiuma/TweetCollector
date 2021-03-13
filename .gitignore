@@ -1,4 +1,4 @@
-config.py
+config*
 json/*
 media/*
 __pycache__/*
