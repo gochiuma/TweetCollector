@@ -10,9 +10,9 @@ import sys, calendar
 import os
 import config
 
-twitter_id = OtogibaraEra
-start_page = 3
-end_page = 4
+twitter_id = "OtogibaraEra"
+start_page = 1
+end_page = 1
 
 def download_file(url, page, tweet_id, file_name):
     print("",end="")
@@ -26,22 +26,8 @@ def mkPageDir(page):
     if not os.path.exists('media/' + str(page)):
         os.mkdir('media/' + str(page))
 
-def add_tweet(tweet_id,screen_name,date,reply_id,full_text,ex_urls,media_type,media_urls,f):
-    #print("tweet ID:%s" % tweet_id)
-    #print("screen name:%s" % screen_name)
-    #print("reply ID:%s" % reply_id)
-    #print("tweet:%s" % full_text)
-    #print("ex_urls:")
-    #print(ex_urls)
-    #print("media_type:%s" % media_type)
-    #print("media_names:")
-    #print(media_urls)
-    data = f"\"{tweet_id}\" {{\n\t\"screenName\": \"{screen_name}\",\n\t\"created_at\": \"{date}\",\n\t\"replyId\": \"{reply_id}\",\n\t\"text\": {repr(full_text)},\n\t\"exUrls\": {ex_urls},\n\t\"mediaType\": \"{media_type}\",\n\t\"mediaUrls\": {media_urls}\n}},"
-    #f.writelines("\"%s\": {\n\tscreenName: \"%s\",\n\treplyId: \"%s\",\n\ttext: \"%s\",\n\texUrls: " % (tweet_id,screen_name,reply_id,repr(full_text)),end="")
-    #f.writelines(ex_urls,end="")
-    #f.writelines(",\n\tmediaType: \"%s\",\n\tmediaUrls: " % (media_type),end="")
-    #f.writelines(media_urls,end="")
-    #f.writelines(",\n},")
+def add_tweet(tweet_id,screen_name,date,reply_id,full_text,ex_urls,media_type,media_names,f):
+    data = f"\"{tweet_id}\" {{\n\t\"screenName\": \"{screen_name}\",\n\t\"created_at\": \"{date}\",\n\t\"replyId\": \"{reply_id}\",\n\t\"text\": {repr(full_text)},\n\t\"exUrls\": {ex_urls},\n\t\"mediaType\": \"{media_type}\",\n\t\"mediaNames\": {media_names}\n}},"
     print(data)
     f.write(data)
 
