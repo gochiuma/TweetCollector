@@ -12,7 +12,7 @@ import config
 
 twitter_id = "OtogibaraEra"
 start_page = 1
-end_page = 1
+end_page = 10
 
 def download_file(url, page, tweet_id, file_name):
     print("",end="")
@@ -31,7 +31,7 @@ def add_tweet(tweet_id,screen_name,date,reply_id,full_text,ex_urls,media_type,me
     print(data)
     f.write(data)
 
-def get_tweet_status(tweet,page,selfJson,officialJson):
+def get_tweet_status(tweet,page,excerptJson,fullJson):
     media_type = "null"
     ex_urls = []
     media_urls = []
@@ -79,9 +79,9 @@ def get_tweet_status(tweet,page,selfJson,officialJson):
                 download_file(image_url + ':orig',page,tweet.id, image_name)
                 media_urls.append(image_name)
 
-    add_tweet(tweet.id,tweet.user.screen_name,tweet.created_at,tweet.in_reply_to_status_id,tweet.full_text,ex_urls,media_type,media_urls,selfJson)
-    officialJson.write(json.dumps(tweet._json, indent=4, ensure_ascii=False))
-    officialJson.write(",\n")
+    add_tweet(tweet.id,tweet.user.screen_name,tweet.created_at,tweet.in_reply_to_status_id,tweet.full_text,ex_urls,media_type,media_urls,excerptJson)
+    fullJson.write(json.dumps(tweet._json, indent=4, ensure_ascii=False))
+    fullJson.write(",\n")
     #print(json.dumps(tweet._json, indent=4, ensure_ascii=False))
 
 
@@ -90,10 +90,10 @@ auth.set_access_token(config.access_token, config.access_token_secret)
 api = tweepy.API(auth)
 
 for i in range(start_page,end_page+1):
-    selfJson = open("json/selfmake_page"+str(i)+".json",mode='a')
-    officialJson = open("json/official_page"+str(i)+".json",mode='a')
+    excerptJson = open("json/excerpt_page"+str(i)+".json",mode='a')
+    fullJson = open("json/full_page"+str(i)+".json",mode='a')
     mkPageDir(i)
     public_tweets = api.user_timeline(screen_name=twitter_id, count=200, page=i,tweet_mode='extended', include_entities=True)
     for tweet in public_tweets:
-        get_tweet_status(tweet,i,selfJson,officialJson)
+        get_tweet_status(tweet,i,excerptJson,fullJson)
     

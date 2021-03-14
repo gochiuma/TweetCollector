@@ -8,14 +8,12 @@ import urllib.request
 import re
 import sys, calendar
 import os
-import config_gochi_uma_v as config
+import config as config
 
-twitter_id = "gochi_uma_v"
+twitter_id = "OtogibaraEra"
 q = f"(from:{twitter_id})"
-since_date = "202103070000"
-until_date = "202103100000"
-start_page = 17
-end_page = 38
+since_date = "201001010000"
+until_date = "201912140816"
 
 
 def download_file(url, page, tweet_id, file_name):
@@ -35,7 +33,7 @@ def add_tweet(tweet_id,screen_name,date,reply_id,full_text,ex_urls,media_type,me
     print(data)
     f.write(data)
 
-def get_tweet_status(tweet,page,selfJson,officialJson):
+def get_tweet_status(tweet,page,excerptJson,fullJson):
     media_type = "null"
     ex_urls = []
     media_urls = []
@@ -83,9 +81,9 @@ def get_tweet_status(tweet,page,selfJson,officialJson):
                 download_file(image_url + ':orig',page,tweet.id, image_name)
                 media_urls.append(image_name)
 
-    add_tweet(tweet.id,tweet.user.screen_name,tweet.created_at,tweet.in_reply_to_status_id,tweet.text,ex_urls,media_type,media_urls,selfJson)
-    officialJson.write(json.dumps(tweet._json, indent=4, ensure_ascii=False))
-    officialJson.write(",\n")
+    add_tweet(tweet.id,tweet.user.screen_name,tweet.created_at,tweet.in_reply_to_status_id,tweet.text,ex_urls,media_type,media_urls,excerptJson)
+    fullJson.write(json.dumps(tweet._json, indent=4, ensure_ascii=False))
+    fullJson.write(",\n")
     #print(json.dumps(tweet._json, indent=4, ensure_ascii=False))
 
 
@@ -95,12 +93,12 @@ api = tweepy.API(auth,wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 i = 0
 
-for page in tweepy.Cursor(api.search_30_day, query=q, maxResults=100,fromDate = since_date,toDate = until_date,environment_name="test3").pages(10):
+for page in tweepy.Cursor(api.search_full_archive, query=q, maxResults=500,fromDate = since_date,toDate = until_date,environment_name="test4").pages(27):
     i = i+1
-    selfJson = open("json/selfmake_page"+str(i)+".json",mode='a')
-    officialJson = open("json/official_page"+str(i)+".json",mode='a')
+    excerptJson = open("json/excerpt_page"+str(i)+".json",mode='a')
+    fullJson = open("json/full_page"+str(i)+".json",mode='a')
     mkPageDir(i)
     for tweet in page:
-        get_tweet_status(tweet,i,selfJson,officialJson)
+        get_tweet_status(tweet,i,excerptJson,fullJson)
 
     
